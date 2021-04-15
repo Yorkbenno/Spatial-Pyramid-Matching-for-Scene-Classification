@@ -2,12 +2,14 @@ import numpy as np
 import threading
 import queue
 import imageio
-import os,time
+import os, time
 import math
 import visual_words
+import matplotlib.pyplot as plt
+
 
 def build_recognition_system(num_workers=2):
-	'''
+    '''
 	Creates a trained recognition system by generating training features from all training images.
 
 	[input]
@@ -20,16 +22,15 @@ def build_recognition_system(num_workers=2):
 	* SPM_layer_num: number of spatial pyramid layers
 	'''
 
+    train_data = np.load("../data/train_data.npz")
+    dictionary = np.load("dictionary.npy")
+    # ----- TODO -----
 
+    pass
 
-	train_data = np.load("../data/train_data.npz")
-	dictionary = np.load("dictionary.npy")
-	# ----- TODO -----
-
-	pass
 
 def evaluate_recognition_system(num_workers=2):
-	'''
+    '''
 	Evaluates the recognition system for all test images and returns the confusion matrix.
 
 	[input]
@@ -40,17 +41,14 @@ def evaluate_recognition_system(num_workers=2):
 	* accuracy: accuracy of the evaluated system
 	'''
 
-
-	test_data = np.load("../data/test_data.npz")
-	trained_system = np.load("trained_system.npz")
-	# ----- TODO -----
-	pass
-
+    test_data = np.load("../data/test_data.npz")
+    trained_system = np.load("trained_system.npz")
+    # ----- TODO -----
+    pass
 
 
-
-def get_image_feature(file_path,dictionary,layer_num,K):
-	'''
+def get_image_feature(file_path, dictionary, layer_num, K):
+    '''
 	Extracts the spatial pyramid matching feature.
 
 	[input]
@@ -62,50 +60,58 @@ def get_image_feature(file_path,dictionary,layer_num,K):
 	[output]
 	* feature: numpy.ndarray of shape (K)
 	'''
-	pass
+    pass
 
 
-	# ----- TODO -----
+# ----- TODO -----
 
 
-def distance_to_set(word_hist,histograms):
-	'''
-	Compute similarity between a histogram of visual words with all training image histograms.
+def distance_to_set(word_hist, histograms):
+    """
+    Compute similarity between a histogram of visual words with all training image histograms.
 
-	[input]
-	* word_hist: numpy.ndarray of shape (K)
-	* histograms: numpy.ndarray of shape (N,K)
+    [input]
+    * word_hist: numpy.ndarray of shape (K)
+    * histograms: numpy.ndarray of shape (N,K)
 
-	[output]
-	* sim: numpy.ndarray of shape (N)
-	'''
-	pass
-	
+    [output]
+    * sim: numpy.ndarray of shape (N)
+    """
 
-
-	# ----- TODO -----
+    pass
 
 
-
-def get_feature_from_wordmap(wordmap,dict_size):
-	'''
-	Compute histogram of visual words.
-
-	[input]
-	* wordmap: numpy.ndarray of shape (H,W)
-	* dict_size: dictionary size K
-
-	[output]
-	* hist: numpy.ndarray of shape (K)
-	'''
-	
-	# ----- TODO -----
-	pass
+# ----- TODO -----
 
 
+def get_feature_from_wordmap(wordmap, dict_size):
+    """
+    Compute histogram of visual words.
 
-def get_feature_from_wordmap_SPM(wordmap,layer_num,dict_size):
-	'''
+    [input]
+    * wordmap: numpy.ndarray of shape (H,W)
+    * dict_size: dictionary size K
+
+    [output]
+    * hist: numpy.ndarray of shape (K)
+    """
+
+    # ----- TODO -----
+
+    H, W = wordmap.shape
+    flatten = wordmap.reshape(-1)
+    bin = np.arange(dict_size + 1)
+    hist, bin_return = np.histogram(flatten, bins=bin, density=True)
+    # plt.bar(bin_return[:-1], hist, width=1)
+    # plt.xlim(min(bin_return), max(bin_return))
+    # plt.show()
+    hist = hist.reshape((1, dict_size))
+
+    return hist
+
+
+def get_feature_from_wordmap_SPM(wordmap, layer_num, dict_size):
+	"""
 	Compute histogram of visual words using spatial pyramid matching.
 
 	[input]
@@ -115,16 +121,34 @@ def get_feature_from_wordmap_SPM(wordmap,layer_num,dict_size):
 
 	[output]
 	* hist_all: numpy.ndarray of shape (K*(4^layer_num-1)/3)
-	'''
-	
-	# ----- TODO -----
+	"""
 
+	H, W = wordmap.shape
+	weights = []
+	for i in range(layer_num):
+		if i == 0 or i == 1:
+			weights.append(np.power(2, -(layer_num-1)))
+		else:
+			weights.append(np.power(2, i-layer_num))
+
+	section = np.power(2, i)
+	hist_all = []
+	for i in range(layer_num - 1, -1, -1):
+		weight = weights[i]
+		height = int(H / section)
+		width = int(W / section)
+
+		for a in range(section):
+			for b in range(section):
+				img = wordmap[height*a: height*(a+1), width*b:width*(b+1)]
+				hist = get_feature_from_wordmap(img, dict_size)  # 1 * K
+				hist_all.append(hist)
+
+	hist_all = np.hstack(hist_all)
+
+	return hist_all
+
+
+if __name__ == '__main__':
+	# get_feature_from_wordmap()
 	pass
-
-
-
-
-
-
-	
-
