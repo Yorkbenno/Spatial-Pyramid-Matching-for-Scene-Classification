@@ -6,9 +6,7 @@
 
 ---
 
-
-
-
+![](D:\Year3S\COMP5421\assignment\hw1_code_data\yyubm.assets\Q1.1.1.jpg)
 
 
 
@@ -91,3 +89,31 @@ And the result accuracy is:
 ![](D:\Year3S\COMP5421\assignment\hw1_code_data\yyubm.assets\sun_axbidhchxcpixhso.jpg)
 
 ![](D:\Year3S\COMP5421\assignment\hw1_code_data\yyubm.assets\wrong_kitchen.png)
+
+
+
+## Problem 3.2. Building a Visual Recognition System: Revisited
+
+----
+
+The result confusion matrix is:
+
+```python
+[[19.  0.  0.  0.  1.  0.  0.  0.]
+ [ 1. 16.  1.  0.  0.  0.  1.  1.]
+ [ 0.  0. 19.  1.  0.  0.  0.  0.]
+ [ 0.  0.  0. 20.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0. 19.  1.  0.  0.]
+ [ 0.  0.  0.  0.  1. 19.  0.  0.]
+ [ 0.  0.  1.  0.  0.  0. 19.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0. 20.]]
+```
+
+And the result accuracy is:
+
+```python
+0.94375
+```
+
+​	*We could easily see that the accuracy is much better in this case. Which is over 90% but the original one is just 45%. This is better since the neural network extracted all the features of the image and the performance is much better than the BOW approach. The CNN and also pooling technique is proved nowadays to be the best tool for computer vision tasks. With the help of Neural network, we could now achieve much higher accuracy for the classification since more features are extracted and represented more accurately.*
+

@@ -20,7 +20,6 @@ if __name__ == '__main__':
 
     # visual_words.compute_dictionary(num_workers=4)
 
-
     # dictionary = np.load('../results/dictionary.npy')
     # img = visual_words.get_visual_words(image, dictionary)
     # # visual_recog.get_feature_from_wordmap(img, dictionary.shape[0])
@@ -39,12 +38,18 @@ if __name__ == '__main__':
     # for item in wrong:
     #     file_path, actual, predict = item
     #     print(file_path, actual, predict)
-        # if actual == 1 and predict == 7:
-        #     print(file_path)
+    # if actual == 1 and predict == 7:
+    #     print(file_path)
 
     vgg16 = torchvision.models.vgg16(pretrained=True).double()
     vgg16.eval()
-    # deep_recog.build_recognition_system(vgg16,num_workers=num_cores//2)
-    # conf = deep_recog.evaluate_recognition_system(vgg16,num_workers=num_cores//2)
-    # print(conf)
-    # print(np.diag(conf).sum()/conf.sum())
+    # print(list(vgg16.children()))
+    # deep_recog.build_recognition_system(vgg16, num_workers=6)
+    # deep = np.load("../results/trained_system_deep.npz", allow_pickle=True)
+    # print(deep['features'].shape)
+    # print(deep['labels'].shape)
+    # conf, accuracy = deep_recog.evaluate_recognition_system(vgg16, num_workers=4)
+    conf = np.load("../results/conf_deep.npy")
+    print(conf)
+    # print(accuracy)
+    print(np.trace(conf)/conf.sum())
