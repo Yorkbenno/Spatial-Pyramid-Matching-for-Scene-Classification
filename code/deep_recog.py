@@ -46,7 +46,7 @@ def build_recognition_system(vgg16, num_workers=2):
 
     features = np.vstack(features)
 
-    np.savez('../results/trained_system_deep.npz', features=features, labels=labels)
+    np.savez('../results/trained_system_deep2.npz', features=features, labels=labels)
 
 
 def evaluate_recognition_system(vgg16, num_workers=2):
@@ -63,7 +63,7 @@ def evaluate_recognition_system(vgg16, num_workers=2):
 	'''
 
     test_data = np.load("../data/test_data.npz", allow_pickle=True)
-    trained_system_deep = np.load("../results/trained_system_deep.npz")
+    trained_system_deep = np.load("../results/trained_system_deep2.npz")
 
     conf = np.zeros((8, 8))
     iter = test_data['labels'].shape[0]
@@ -134,16 +134,22 @@ def get_image_feature(args):
 	* feat: evaluated deep feature
 	'''
 
+    # i, image_path, vgg16 = args
+    # image = skimage.io.imread("../data/" + image_path)
+    # image = preprocess_image(image)
+    #
+    # linear1 = torch.nn.Sequential(*list(vgg16.children())[0])
+    # adaptivepool = list(vgg16.children())[1]
+    # linear2 = torch.nn.Sequential(*list(vgg16.children())[2][:4])
+    #
+    # feat = linear2(adaptivepool(linear1(image)).flatten())
+    # feat = feat.detach().numpy().reshape(1, 4096)
+    # np.save('../results/feat.npy', feat)
+    #
+    # If we use our self-built model, use the below code
     i, image_path, vgg16 = args
     image = skimage.io.imread("../data/" + image_path)
-    image = preprocess_image(image)
-
-    linear1 = torch.nn.Sequential(*list(vgg16.children())[0])
-    adaptivepool = list(vgg16.children())[1]
-    linear2 = torch.nn.Sequential(*list(vgg16.children())[2][:4])
-
-    feat = linear2(adaptivepool(linear1(image)).flatten())
-    feat = feat.detach().numpy().reshape(1, 4096)
+    feat = network_layers.extract_deep_feature(image, vgg16)
     np.save('../results/feat.npy', feat)
 
     return feat

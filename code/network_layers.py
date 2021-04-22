@@ -28,7 +28,7 @@ def extract_deep_feature(x, vgg16_weights):
 		x[:, :, i] = (x[:, :, i] - mean[i]) / std[i]
 
 	L = len(vgg16_weights)
-	linear = 0
+	count = 0
 	for l in range(L):
 		params = vgg16_weights[l]
 		if params[0] == 'conv2d':
@@ -39,8 +39,8 @@ def extract_deep_feature(x, vgg16_weights):
 			x = max_pool2d(x, params[1])
 		elif params[0] == 'linear':
 			x = linear(x, params[1], params[2])
-			linear += 1
-			if linear == 2:
+			count += 1
+			if count == 2:
 				break
 
 	feat = x.reshape(1, np.shape(x)[0])
